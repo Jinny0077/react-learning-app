@@ -1,0 +1,28 @@
+p {
+  margin: 0;
+  padding: 30px;
+}
+
+h2 {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 5px 0px 0px 0px;
+}
+
+h3 {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+.library {
+  margin: 0;
+  margin-left: 100px;
+  font-size: 20px;
+}
+
+.library li {
+  padding: 3px;
+}

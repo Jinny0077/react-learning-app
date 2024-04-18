@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  justify-content: flex-start;
+  /* border-bottom: 2px solid lightgray; */
+  padding: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.link a {
+  color: black;
+  text-decoration: none;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  width: 100px;
+  text-align: center;
+}
+
+.link a:hover {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
