@@ -10,9 +10,11 @@ import {
 } from "@mui/material";
 import Spacer from "../../components/Spacer";
 import React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 
-import useDataManagementSerivce from "./service";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
+import useDataManagementService from "./service";
 import { Controller } from "react-hook-form";
 
 function DataManagement() {
@@ -25,30 +27,42 @@ function DataManagement() {
     handleSubmit,
     handleOk,
     generateId,
-  } = useDataManagementSerivce();
+    assetListError,
+    handleIncrease,
+    handleDecrease,
+    quantity,
+    assetListing,
+  } = useDataManagementService();
 
-  const columns = React.useMemo(
+  const columns = React.useMemo<GridColDef[]>(
     () => [
       {
         field: "id",
         headerName: "Id",
         flex: 1,
         minWidth: 100,
-        headerClaseName: "super-app-theme--header",
+        headerClassName: "super-app-theme--header",
       },
       {
         field: "asset",
         headerName: "Asset",
         flex: 1,
         minWidth: 100,
-        headerClaseName: "super-app-theme--header",
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "price",
+        headerName: "Price",
+        flex: 1,
+        minWidth: 100,
+        headerClassName: "super-app-theme--header",
       },
       {
         field: "quantity",
         headerName: "Quantity",
         flex: 1,
         minWidth: 100,
-        headerClaseName: "super-app-theme--header",
+        headerClassName: "super-app-theme--header",
       },
       {
         field: "action",
@@ -56,12 +70,18 @@ function DataManagement() {
         type: "actions",
         flex: 1,
         minWidth: 130,
-        headerClaseName: "super-app-theme--header",
-        getAction: () => [
-          <>
-            <Button>Edit</Button>
-            <Button>Delete</Button>
-          </>,
+        headerClassName: "super-app-theme--header",
+        getActions: (params) => [
+          <GridActionsCellItem
+            icon={<EditTwoToneIcon />}
+            label="Edit"
+            onClick={() => showModal(params, "edit")}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteTwoToneIcon />}
+            label="Delete"
+            onClick={() => showModal(params, "edit")}
+          />,
         ],
       },
     ],
@@ -79,7 +99,7 @@ function DataManagement() {
         >
           <Button
             variant="contained"
-            style={{ borderRadius: "20px" }}
+            style={{ borderRadius: "20px", backgroundColor: "#a172a1" }}
             onClick={showModal}
           >
             Create
@@ -91,18 +111,19 @@ function DataManagement() {
             height: 300,
             width: "100%",
             "& .super-app-theme--header": {
-              backgroundColor: "rgb(106, 90, 205)",
+              backgroundColor: "#a172a1",
               color: "white",
             },
           }}
         >
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
-              // rows={}
+              rows={assetListing}
               columns={columns}
-              disableSelectionOnClick
+              // disableSelectionOnClick
               // onPageSizeChange={(newPageSize: any) => setLength(newPageSize)}
               // pageSize={length}
+              // pageSize={5}
               // rowsPerPageOptions={[10, 25, 50, 100]}
               // paginationMode="server"
               // rowCount={totalItem}
@@ -110,9 +131,11 @@ function DataManagement() {
               autoHeight={true}
               // sortingMode="server"
               // onSortModelChange={handleSort}
-              // getRowId={(row) => row.actionGroupId}
+              getRowId={(row) => row.id}
               // loading={loading ? true : false}
             />
+
+            {/* Create/Edit Dialog */}
             <Dialog
               open={isModalVisible}
               onClose={handleCancel}
@@ -138,37 +161,101 @@ function DataManagement() {
                     </Box>
                     <Spacer height={12} />
                     <Box>
-                      <InputLabel htmlFor="name">Asset:</InputLabel>
+                      <InputLabel htmlFor="Asset">Asset:</InputLabel>
                       <Controller
                         name="asset"
                         control={control}
                         render={({ field }) => (
-                          <Input
-                            {...field}
-                            fullWidth
-                            name="asset"
-                            type="text"
-
-                            // error
-                          />
+                          <>
+                            <Input
+                              {...field}
+                              fullWidth
+                              name="asset"
+                              type="text"
+                              error={assetListError.asset ? true : false}
+                            />
+                            {assetListError.asset && (
+                              <span style={{ color: "red" }}>
+                                {assetListError.asset.message}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      />
+                    </Box>
+                    <Spacer height={12} />
+                    <Box>
+                      <InputLabel htmlFor="price">Price:</InputLabel>
+                      <Controller
+                        name="price"
+                        control={control}
+                        render={({ field }) => (
+                          <>
+                            <Input
+                              {...field}
+                              fullWidth
+                              name="price"
+                              type="text"
+                              error={assetListError.price ? true : false}
+                            />
+                            {assetListError.price && (
+                              <span style={{ color: "red" }}>
+                                {assetListError.price.message}
+                              </span>
+                            )}
+                          </>
                         )}
                       />
                     </Box>
                     <Spacer height={12} />
                     <Box>
                       <InputLabel htmlFor="quantity">Quantity:</InputLabel>
+                      <Spacer height={12} />
                       <Controller
                         name="quantity"
                         control={control}
-                        render={({ field }) => (
-                          <Input
-                            {...field}
-                            fullWidth
-                            name="quantity"
-                            type="text"
-
-                            // error
-                          />
+                        render={(field) => (
+                          <div
+                            style={{
+                              display: "flex",
+                            }}
+                          >
+                            <Button
+                              variant="outlined"
+                              style={{
+                                color: "black",
+                                borderColor: "gray",
+                                marginRight: "15px",
+                                minWidth: "30px",
+                              }}
+                              onClick={handleDecrease}
+                            >
+                              -
+                            </Button>
+                            <Input
+                              {...field}
+                              name="quantity"
+                              // type="number"
+                              style={{
+                                width: "100px",
+                              }}
+                              // value={quantity}
+                              error={assetListError.quantity ? true : false}
+                              readOnly
+                            />
+                            <Button
+                              variant="outlined"
+                              style={{
+                                color: "black",
+                                borderColor: "gray",
+                                marginLeft: "15px",
+                                minWidth: "30px",
+                              }}
+                              onClick={handleIncrease}
+                            >
+                              +
+                            </Button>
+                          </div>
                         )}
                       />
                     </Box>
