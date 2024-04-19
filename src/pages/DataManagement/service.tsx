@@ -28,12 +28,9 @@ interface ReturnProps {
   control: Control<ICreate, any>;
   handleSubmit: UseFormHandleSubmit<ICreate>;
   handleOk: SubmitHandler<ICreate>;
-  generateId: (id: number) => string;
   assetListError: Partial<FieldErrorsImpl<ICreate>>;
-  handleIncrease: () => void;
-  handleDecrease: () => void;
-  quantity: number;
   assetListing: ICreate[];
+  deleteAsset: (data?: any) => void;
 }
 
 // validation
@@ -46,7 +43,12 @@ const assetSchema = yup.object({
     .label("Price")
     .positive("Please insert positive number")
     .integer("Please insert integer"),
-  quantity: yup.number().label("Quantity"),
+  quantity: yup
+    .number()
+    .required()
+    .label("Quantity")
+    .positive("Please insert positive number")
+    .integer("Please insert a number"),
 });
 
 export default function useDataManagementService(): ReturnProps {
@@ -68,13 +70,13 @@ export default function useDataManagementService(): ReturnProps {
 
   const [lastGeneratedId, setLastGeneratedId] = useState<number>(0);
 
-  const showModal = async (data: any, edit?: string) => {
+  const showModal = async (data?: ICreate, edit?: string) => {
     if (edit) {
       setToEdit(true);
       // setAssetListing(data.row);
+      reset(data);
     } else {
       reset();
-      setQuantity(0);
       setToEdit(false);
     }
     setIsModalVisible(true);
@@ -82,18 +84,18 @@ export default function useDataManagementService(): ReturnProps {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    reset();
+    reset({});
   };
 
   const handleOk: SubmitHandler<ICreate> = async (data) => {
     try {
-      console.log("Data before Axios request:", data);
+      console.log("Data to be updated:", data);
       if (!toEdit) {
         const newAsset: ICreate = {
           ...data,
           id: lastGeneratedId + 1,
         };
-        await axios.post("../../db.json", newAsset);
+        await axios.post("http://localhost:3001/assets", newAsset);
         setAssetListing([...assetListing, newAsset]);
         setLastGeneratedId(lastGeneratedId + 1);
         Swal.fire(
@@ -102,7 +104,11 @@ export default function useDataManagementService(): ReturnProps {
           "success"
         );
       } else {
-        const res = await axios.put(`../../db.json/${data.id}`, data);
+        const res = await axios.put(
+          `http://localhost:3001/assets/${data.id}`,
+          data
+        );
+        console.log("Update Response:", res.data);
         const updateAssetListing = assetListing.map((item) =>
           item.id === res.data.id ? data : item
         );
@@ -118,32 +124,8 @@ export default function useDataManagementService(): ReturnProps {
       setIsModalVisible(false);
       console.log(data);
     } catch (error: any) {
+      console.error("Update Error:", error.response);
       setError(error);
-    }
-  };
-
-  const generateId = (length: number): string => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const charactersLength = characters.length;
-    let result = "";
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  };
-
-  // Quantity Button
-  const [quantity, setQuantity] = useState(0);
-
-  const handleIncrease = () => {
-    console.log("Increasing quantity");
-    setQuantity(quantity + 1);
-  };
-
-  const handleDecrease = () => {
-    if (quantity > 0) {
-      setQuantity(quantity - 1);
     }
   };
 
@@ -152,7 +134,7 @@ export default function useDataManagementService(): ReturnProps {
 
   const getAssetListing = async () => {
     try {
-      const res = await axios.get("../../db.json");
+      const res = await axios.get("http://localhost:3001/assets");
       setAssetListing(res.data);
       if (res.data.length > 0) {
         // Find the maximum ID in the existing data and set lastGeneratedId accordingly
@@ -169,6 +151,51 @@ export default function useDataManagementService(): ReturnProps {
     console.log(assetListing);
   }, []);
 
+  const deleteAsset = async (id: number) => {
+    Swal.fire({
+      text: TitleText.SWEEtALERTTEXT.alerttext_warning,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:3001/assets/${id}`);
+          Swal.fire(
+            TitleText.SWEEtALERTTEXT.alerttitle_success,
+            "Access Group has been deleted!",
+            "success"
+          );
+          const updateAssetListing = assetListing.filter(
+            (item) => item.id !== id
+          );
+          setAssetListing(updateAssetListing);
+          // getAssetListing();
+        } catch (error) {
+          console.error("Delete data:", error);
+        }
+      }
+    });
+  };
+
+  // const deleteAsset = (id: number) => {
+  //   if (window.confirm("Do you want to remove?")) {
+  //     axios
+  //       .delete(`http://localhost:3001/assets/${id}`)
+  //       .then(() => {
+  //         alert("Remove successfully.");
+  //         const updatedProducts = assetListing.filter(
+  //           (product) => product.id !== id
+  //         );
+  //         setAssetListing(updatedProducts);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err.message);
+  //       });
+  //   }
+  // };
+
   return {
     isModalVisible,
     toEdit,
@@ -177,11 +204,8 @@ export default function useDataManagementService(): ReturnProps {
     control,
     handleSubmit,
     handleOk,
-    generateId,
     assetListError,
-    handleIncrease,
-    handleDecrease,
-    quantity,
     assetListing,
+    deleteAsset,
   };
 }

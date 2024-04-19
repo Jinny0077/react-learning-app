@@ -26,11 +26,8 @@ function DataManagement() {
     control,
     handleSubmit,
     handleOk,
-    generateId,
+    deleteAsset,
     assetListError,
-    handleIncrease,
-    handleDecrease,
-    quantity,
     assetListing,
   } = useDataManagementService();
 
@@ -75,12 +72,12 @@ function DataManagement() {
           <GridActionsCellItem
             icon={<EditTwoToneIcon />}
             label="Edit"
-            onClick={() => showModal(params, "edit")}
+            onClick={() => showModal(params.row, "edit")}
           />,
           <GridActionsCellItem
             icon={<DeleteTwoToneIcon />}
             label="Delete"
-            onClick={() => showModal(params, "edit")}
+            onClick={() => deleteAsset(params.id)}
           />,
         ],
       },
@@ -154,8 +151,8 @@ function DataManagement() {
                       <Controller
                         name="id"
                         control={control}
-                        render={() => (
-                          <Input value={generateId} fullWidth disabled />
+                        render={({ field }) => (
+                          <Input {...field} fullWidth disabled />
                         )}
                       />
                     </Box>
@@ -170,8 +167,8 @@ function DataManagement() {
                             <Input
                               {...field}
                               fullWidth
-                              name="asset"
-                              type="text"
+                              // name="asset"
+                              // type="text"
                               error={assetListError.asset ? true : false}
                             />
                             {assetListError.asset && (
@@ -194,8 +191,8 @@ function DataManagement() {
                             <Input
                               {...field}
                               fullWidth
-                              name="price"
-                              type="text"
+                              // name="price"
+                              // type="text"
                               error={assetListError.price ? true : false}
                             />
                             {assetListError.price && (
@@ -214,7 +211,7 @@ function DataManagement() {
                       <Controller
                         name="quantity"
                         control={control}
-                        render={(field) => (
+                        render={({ field }) => (
                           <div
                             style={{
                               display: "flex",
@@ -228,20 +225,17 @@ function DataManagement() {
                                 marginRight: "15px",
                                 minWidth: "30px",
                               }}
-                              onClick={handleDecrease}
+                              onClick={() => field.onChange(field.value - 1)}
                             >
                               -
                             </Button>
                             <Input
                               {...field}
-                              name="quantity"
-                              // type="number"
+                              // value={field.value}
                               style={{
                                 width: "100px",
                               }}
-                              // value={quantity}
                               error={assetListError.quantity ? true : false}
-                              readOnly
                             />
                             <Button
                               variant="outlined"
@@ -251,10 +245,22 @@ function DataManagement() {
                                 marginLeft: "15px",
                                 minWidth: "30px",
                               }}
-                              onClick={handleIncrease}
+                              onClick={() => field.onChange(field.value + 1)}
                             >
                               +
                             </Button>
+
+                            {assetListError.quantity && (
+                              <span
+                                style={{
+                                  color: "red",
+                                  marginLeft: "20px",
+                                  marginTop: "8px",
+                                }}
+                              >
+                                {assetListError.quantity.message}
+                              </span>
+                            )}
                           </div>
                         )}
                       />
