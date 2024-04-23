@@ -1,3 +1,8 @@
+.home {
+  background-color: var(--body_background);
+  color: var(--body_color);
+}
+
 p {
   margin: 0;
   padding: 30px;

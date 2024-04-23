@@ -1,0 +1,9 @@
+:root {
+  --body_background: white;
+  --body_color: black;
+}
+
+[data-theme="dark"] {
+  --body_background: #282c34;
+  --body_color: white;
+}

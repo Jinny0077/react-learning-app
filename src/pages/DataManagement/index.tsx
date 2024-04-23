@@ -86,7 +86,7 @@ function DataManagement() {
   );
 
   return (
-    <div>
+    <div className="data">
       <h2>Data Management Dashboard</h2>
       <div>
         <Box
