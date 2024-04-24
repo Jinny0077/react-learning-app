@@ -1,6 +1,7 @@
 .header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: center;
   /* border-bottom: 2px solid lightgray; */
   padding: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
@@ -19,4 +20,38 @@
 .link a:hover {
   font-weight: bold;
   background-color: #f0f0f0;
+}
+
+.link-container {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  font-size: 23px;
+  display: flex;
+  align-items: center;
+}
+
+.dark-mode {
+  margin-left: 900px;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 1030px) {
+  .dark-mode {
+    margin-left: 600px;
+  }
+}
+
+@media screen and (max-width: 890px) {
+  .dark-mode {
+    margin-left: 380px;
+  }
+}
+
+@media screen and (max-width: 667px) {
+  .dark-mode {
+    margin-left: 100px;
+  }
 }

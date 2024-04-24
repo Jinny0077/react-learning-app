@@ -73,11 +73,19 @@ function DataManagement() {
             icon={<EditTwoToneIcon />}
             label="Edit"
             onClick={() => showModal(params.row, "edit")}
+            style={{
+              backgroundColor: "var(--body_background)",
+              color: "var(--body_color)",
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteTwoToneIcon />}
             label="Delete"
             onClick={() => deleteAsset(params.id)}
+            style={{
+              backgroundColor: "var(--body_background)",
+              color: "var(--body_color)",
+            }}
           />,
         ],
       },
@@ -86,7 +94,13 @@ function DataManagement() {
   );
 
   return (
-    <div className="data">
+    <Box
+      className="data"
+      sx={{
+        backgroundColor: "var(--body_background)",
+        color: "var(--body_color)",
+      }}
+    >
       <h2>Data Management Dashboard</h2>
       <div>
         <Box
@@ -115,21 +129,15 @@ function DataManagement() {
         >
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
+              className="table"
+              sx={{
+                backgroundColor: "var(--body_background)",
+                color: "var(--body_color)",
+              }}
               rows={assetListing}
               columns={columns}
-              // disableSelectionOnClick
-              // onPageSizeChange={(newPageSize: any) => setLength(newPageSize)}
-              // pageSize={length}
-              // pageSize={5}
-              // rowsPerPageOptions={[10, 25, 50, 100]}
-              // paginationMode="server"
-              // rowCount={totalItem}
-              // onPageChange={(newPage) => setPage(newPage + 1)}
               autoHeight={true}
-              // sortingMode="server"
-              // onSortModelChange={handleSort}
               getRowId={(row) => row.id}
-              // loading={loading ? true : false}
             />
 
             {/* Create/Edit Dialog */}
@@ -191,8 +199,6 @@ function DataManagement() {
                             <Input
                               {...field}
                               fullWidth
-                              // name="price"
-                              // type="text"
                               error={assetListError.price ? true : false}
                             />
                             {assetListError.price && (
@@ -231,7 +237,6 @@ function DataManagement() {
                             </Button>
                             <Input
                               {...field}
-                              // value={field.value}
                               style={{
                                 width: "100px",
                               }}
@@ -276,7 +281,7 @@ function DataManagement() {
           </div>
         </Box>
       </div>
-    </div>
+    </Box>
   );
 }
 

@@ -2,3 +2,8 @@
   background-color: var(--body_background);
   color: var(--body_color);
 }
+
+.table {
+  background-color: var(--body_background);
+  color: var(--body_color);
+}

@@ -76,7 +76,7 @@ export default function useDataManagementService(): ReturnProps {
       // setAssetListing(data.row);
       reset(data);
     } else {
-      reset();
+      reset({ quantity: 0 });
       setToEdit(false);
     }
     setIsModalVisible(true);
@@ -84,7 +84,7 @@ export default function useDataManagementService(): ReturnProps {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    reset({});
+    reset({ quantity: 0 });
   };
 
   const handleOk: SubmitHandler<ICreate> = async (data) => {
@@ -120,7 +120,7 @@ export default function useDataManagementService(): ReturnProps {
         );
       }
       // getAssetListing();
-      reset();
+      reset({ quantity: 0 });
       setIsModalVisible(false);
       console.log(data);
     } catch (error: any) {
@@ -171,7 +171,7 @@ export default function useDataManagementService(): ReturnProps {
             (item) => item.id !== id
           );
           setAssetListing(updateAssetListing);
-          // getAssetListing();
+          getAssetListing();
         } catch (error) {
           console.error("Delete data:", error);
         }

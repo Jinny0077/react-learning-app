@@ -6,19 +6,14 @@ const Header = () => {
   return (
     <header>
       <nav className="header">
-        <div
-          className="link"
-          style={{
-            fontSize: "23px",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Link to="/">Home</Link>
-          <Link to="/dataManagement">Management </Link>
-        </div>
-        <div style={{ marginLeft: "900px" }}>
-          <DarkMode />
+        <div className="link-container">
+          <div className="link">
+            <Link to="/">Home</Link>
+            <Link to="/dataManagement">Management </Link>
+          </div>
+          <div className="dark-mode">
+            <DarkMode />
+          </div>
         </div>
       </nav>
     </header>
